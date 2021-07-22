@@ -4,9 +4,9 @@ This example app shows a bar chart of data from a table.
 
 The code shows:
 
--   How to use the Chart.js external library.
+- How to use the Chart.js external library.
 
--   How to store app-related data using `globalConfig` and `Synced` UI components.
+- How to store app-related data using `globalConfig` and `Synced` UI components.
 
 ## How to run this app
 
@@ -22,3 +22,7 @@ The code shows:
 ## See the app running
 
 ![App updating chart as the user changes data](media/block.gif)
+
+// This app uses chart.js and the react-chartjs-2 packages.
+// Install them by running this in the terminal:
+// npm install chart.js react-chartjs-2
