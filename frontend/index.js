@@ -3,7 +3,6 @@ import React from "react";
 import {
   initializeBlock,
   useBase,
-  useRecords,
   useGlobalConfig,
   Box,
 } from "@airtable/blocks/ui";
@@ -19,11 +18,6 @@ function SimpleChartApp() {
   const tableId = globalConfig.get(GlobalConfigKeys.TABLE_ID);
   const table = base.getTableByIdIfExists(tableId);
 
-  const viewId = globalConfig.get(GlobalConfigKeys.VIEW_ID);
-  const view = table ? table.getViewByIdIfExists(viewId) : null;
-
-  const records = useRecords(view);
-
   return (
     <Box
       position="absolute"
@@ -34,9 +28,9 @@ function SimpleChartApp() {
       display="flex"
       flexDirection="column"
     >
-      <Controls table={table} records={records} />
+      <Controls table={table} />
       <Box position="relative" flex="auto" padding={3}>
-        <Chart table={table} records={records} />
+        <Chart table={table} />
       </Box>
     </Box>
   );
