@@ -9,27 +9,42 @@ import {
   useGlobalConfig,
 } from "@airtable/blocks/ui";
 
-import GlobalConfigKeys from "./settings/settings";
-import isNull from "../utils/isNull";
+import GlobalConfigKeys from "../../config/settings";
+import { isDefault, F_DEFAULT } from "../../utils/isDefault";
+
+// The Controls box gives us our form handlers for manipulating global state.
+// We can choose an xAxis value and a groupBy (optional) value.
+
+// [!] Note: if you don't need to control the shape of your select options,
+// FieldPickerSynced is probably a better option than Select!
 
 export default function Controls({ table }) {
   const globalConfig = useGlobalConfig();
 
+  // Fetching the synced values from our global state.
   const xAxisValue = globalConfig.get(GlobalConfigKeys.X_FIELD_ID);
   const groupByValue = globalConfig.get(GlobalConfigKeys.GROUP_FIELD_ID);
 
+  // Creating our options for the xAxis and Group Select.
+  // Our xAxis operation removes the primary field and formats the data.
+  // Our groupBy operation removes the xAxis field from our options.
   const xAxisFields = table.fields
     .filter((f) => f.name !== table.primaryField.name)
     .map(({ name }) => ({ value: name, label: name }));
   const groupByFields = xAxisFields.filter((f) => f.value !== xAxisValue);
 
-  const defaultSelect = { value: "null", label: "---" };
+  // Create a default value since Select doesn't support choosing null.
+  const defaultSelect = { value: F_DEFAULT, label: "---" };
 
+  // This effect creates a guard to handle inconsistencies in the
+  // handling of null values and form state. We want to avoid
+  // the condition where an input is accidentally null which
+  // creates the illusion of a broken form.
   React.useEffect(() => {
-    if (isNull(xAxisValue))
-      globalConfig.setAsync(GlobalConfigKeys.X_FIELD_ID, "null");
+    if (isDefault(xAxisValue))
+      globalConfig.setAsync(GlobalConfigKeys.X_FIELD_ID, F_DEFAULT);
     if (xAxisValue === groupByValue) {
-      globalConfig.setAsync(GlobalConfigKeys.GROUP_FIELD_ID, "null");
+      globalConfig.setAsync(GlobalConfigKeys.GROUP_FIELD_ID, F_DEFAULT);
     }
   }, [xAxisValue, groupByValue]);
 
@@ -56,6 +71,7 @@ export default function Controls({ table }) {
               options={[defaultSelect, ...xAxisFields]}
               value={xAxisValue}
               onChange={(v) => {
+                // This sets our Global state to the selected value.
                 globalConfig.setAsync(GlobalConfigKeys.X_FIELD_ID, v);
               }}
             />
@@ -67,7 +83,7 @@ export default function Controls({ table }) {
             marginBottom={0}
           >
             <Select
-              disabled={isNull(xAxisValue)}
+              disabled={isDefault(xAxisValue)}
               options={[defaultSelect, ...groupByFields]}
               value={groupByValue}
               onChange={(v) => {

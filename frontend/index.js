@@ -7,9 +7,9 @@ import {
   Box,
 } from "@airtable/blocks/ui";
 
-import Controls from "./Controls";
-import Chart from "./Chart";
-import GlobalConfigKeys from "./settings/settings";
+import Controls from "./Controls/Controls";
+import BarChart from "./Chart/BarChart";
+import GlobalConfigKeys from "../config/settings";
 
 function SimpleChartApp() {
   const base = useBase();
@@ -30,7 +30,7 @@ function SimpleChartApp() {
     >
       <Controls table={table} />
       <Box position="relative" flex="auto" padding={3}>
-        <Chart table={table} />
+        <BarChart table={table} />
       </Box>
     </Box>
   );
