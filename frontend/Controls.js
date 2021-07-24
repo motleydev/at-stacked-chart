@@ -26,6 +26,12 @@ export default function Controls({ table }) {
 
   const defaultSelect = { value: "null", label: "---" };
 
+  React.useEffect(() => {
+    if (xAxisValue === groupByValue) {
+      globalConfig.setAsync(GlobalConfigKeys.GROUP_FIELD_ID, "null");
+    }
+  }, [xAxisValue, groupByValue]);
+
   return (
     <Box display="flex" padding={3} borderBottom="thick">
       <FormField label="Table" width="33.33%" paddingRight={1} marginBottom={0}>

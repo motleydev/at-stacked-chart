@@ -3,6 +3,9 @@ import { useGlobalConfig, useRecords } from "@airtable/blocks/ui";
 
 import { Bar } from "react-chartjs-2";
 import GlobalConfigKeys from "./settings";
+import COLORS from "./colors";
+
+const isNull = (x) => x === null || x === "null";
 
 function Chart({ table }) {
   const globalConfig = useGlobalConfig();
@@ -30,12 +33,12 @@ function Chart({ table }) {
         scales: {
           xAxes: [
             {
-              stacked: !!groupField,
+              stacked: !isNull(groupField),
             },
           ],
           yAxes: [
             {
-              stacked: !!groupField,
+              stacked: !isNull(groupField),
               ticks: {
                 beginAtZero: true,
               },
@@ -53,22 +56,13 @@ function Chart({ table }) {
 }
 
 function getChartData({ records, xField, groupField }) {
-  const xUniqueValues = new Set();
-  const groupUniqueValues = new Set();
-  const recordValues = [];
+  const xAxisBucket = new Map();
+  const groupBucket = new Map();
+  let xIndex = 0;
 
-  const colors = [
-    "#2d7ff9",
-    "#18bfff",
-    "#ff08c2",
-    "#f82b60",
-    "#ff6f2c",
-    "#fcb400",
-    "#20c933",
-    "#8b46ff",
-    "#666666",
-  ];
-  for (const record of records) {
+  const colorGen = [...COLORS];
+
+  const transformed = records.map((record) => {
     const xValue = record.getCellValue(xField);
     const xValueString =
       xValue === null ? null : record.getCellValueAsString(xField);
@@ -77,32 +71,61 @@ function getChartData({ records, xField, groupField }) {
     const groupValueString =
       groupValue === null ? null : record.getCellValueAsString(groupField);
 
-    xUniqueValues.add(xValueString);
-    groupUniqueValues.add(groupValueString);
+    const label = groupValueString;
+    const xAxis = xValueString;
 
-    const cleanRecord = {};
-    cleanRecord[xField.id] = xValueString;
-    cleanRecord[groupField?.id] = groupValueString;
+    if (!groupBucket.has(label)) {
+      groupBucket.set(label, { backgroundColor: colorGen.shift() });
+    }
 
-    recordValues.push(cleanRecord);
-  }
+    if (!xAxisBucket.has(xAxis)) {
+      xAxisBucket.set(xAxis, { index: xIndex, tally: 1 });
+      xIndex++;
+    } else {
+      let existing = xAxisBucket.get(xAxis);
+      xAxisBucket.set(xAxis, { ...existing, tally: existing.tally + 1 });
+    }
 
-  const stacked = [...groupUniqueValues].map((groupKey, index) => {
-    const o = {};
-    o.label = groupKey;
-    o.backgroundColor = colors[index];
-    o.data = [...xUniqueValues].map(
-      (xKey) =>
-        recordValues.filter(
-          (r) => r[xField.id] === xKey && r[groupField.id] === groupKey
-        ).length
-    );
-    return o;
+    return { label, xAxis };
   });
 
+  let datasets;
+
+  if (isNull(groupField)) {
+    datasets = [
+      {
+        backgroundColor: colorGen.shift(),
+        data: [...xAxisBucket.values()].map((v) => v.tally),
+      },
+    ];
+  } else {
+    transformed.forEach(({ label, xAxis }) => {
+      const data = new Array(xAxisBucket.size).fill(0);
+      const xAxisIndex = xAxisBucket.get(xAxis).index;
+      let groupBucketEntry = groupBucket.get(label);
+
+      if (groupBucketEntry.label) {
+        groupBucketEntry.data[xAxisIndex] =
+          groupBucketEntry.data[xAxisIndex] + 1;
+        groupBucket.set(label, {
+          ...groupBucketEntry,
+          data: groupBucketEntry.data,
+        });
+      } else {
+        data[xAxisIndex] = 1;
+        groupBucket.set(label, {
+          ...groupBucketEntry,
+          label,
+          data,
+        });
+      }
+    });
+    datasets = [...groupBucket.values()];
+  }
+
   const data = {
-    labels: [...xUniqueValues],
-    datasets: stacked,
+    labels: [...xAxisBucket.keys()],
+    datasets,
   };
   return data;
 }
