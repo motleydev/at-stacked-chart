@@ -2,10 +2,9 @@ import React from "react";
 import { useGlobalConfig, useRecords } from "@airtable/blocks/ui";
 
 import { Bar } from "react-chartjs-2";
-import GlobalConfigKeys from "./settings";
-import COLORS from "./colors";
-
-const isNull = (x) => x === null || x === "null";
+import GlobalConfigKeys from "./settings/settings";
+import COLORS from "./settings/colors";
+import isNull from "../utils/isNull";
 
 function Chart({ table }) {
   const globalConfig = useGlobalConfig();

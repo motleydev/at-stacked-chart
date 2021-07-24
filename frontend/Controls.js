@@ -3,15 +3,14 @@ import React from "react";
 import {
   TablePickerSynced,
   ViewPickerSynced,
-  FieldPickerSynced,
   Box,
   FormField,
-  Label,
   Select,
   useGlobalConfig,
 } from "@airtable/blocks/ui";
 
-import GlobalConfigKeys from "./settings";
+import GlobalConfigKeys from "./settings/settings";
+import isNull from "../utils/isNull";
 
 export default function Controls({ table }) {
   const globalConfig = useGlobalConfig();
@@ -27,6 +26,8 @@ export default function Controls({ table }) {
   const defaultSelect = { value: "null", label: "---" };
 
   React.useEffect(() => {
+    if (isNull(xAxisValue))
+      globalConfig.setAsync(GlobalConfigKeys.X_FIELD_ID, "null");
     if (xAxisValue === groupByValue) {
       globalConfig.setAsync(GlobalConfigKeys.GROUP_FIELD_ID, "null");
     }
@@ -34,12 +35,12 @@ export default function Controls({ table }) {
 
   return (
     <Box display="flex" padding={3} borderBottom="thick">
-      <FormField label="Table" width="33.33%" paddingRight={1} marginBottom={0}>
+      <FormField label="Table" width="25%" paddingRight={1} marginBottom={0}>
         <TablePickerSynced globalConfigKey={GlobalConfigKeys.TABLE_ID} />
       </FormField>
       {table && (
         <React.Fragment>
-          <FormField label="View" width="33.33%" paddingX={1} marginBottom={0}>
+          <FormField label="View" width="25%" paddingX={1} marginBottom={0}>
             <ViewPickerSynced
               table={table}
               globalConfigKey={GlobalConfigKeys.VIEW_ID}
@@ -47,7 +48,7 @@ export default function Controls({ table }) {
           </FormField>
           <FormField
             label="X-axis field"
-            width="33.33%"
+            width="25%"
             paddingLeft={1}
             marginBottom={0}
           >
@@ -61,12 +62,12 @@ export default function Controls({ table }) {
           </FormField>
           <FormField
             label="Group by"
-            width="33.33%"
+            width="25%"
             paddingLeft={1}
             marginBottom={0}
           >
             <Select
-              disabled={xAxisValue === "null"}
+              disabled={isNull(xAxisValue)}
               options={[defaultSelect, ...groupByFields]}
               value={groupByValue}
               onChange={(v) => {

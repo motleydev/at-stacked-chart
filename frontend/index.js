@@ -9,7 +9,7 @@ import {
 
 import Controls from "./Controls";
 import Chart from "./Chart";
-import GlobalConfigKeys from "./settings";
+import GlobalConfigKeys from "./settings/settings";
 
 function SimpleChartApp() {
   const base = useBase();
