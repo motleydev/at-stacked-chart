@@ -1,73 +1,23 @@
-import COLORS from "../../../config/colors";
-import { isDefault, F_DEFAULT } from "../../../utils/isDefault";
+import { isDefault } from "../../../utils/isDefault";
+import groupRecordsByXFields from "./groupRecordsByXField";
+import stackedChartData from "./stackedChartData";
+import simpleChartData from "./simpleChartData";
 
 function getChartData({ records, xField, groupField }) {
   if (isDefault(xField) || !records) return null;
 
-  const xAxisBucket = new Map();
-  const groupBucket = new Map();
-  let xIndex = 0;
+  // Store all our unique xAxis values along with a tally
+  // of the entries and an index in our store for reference if/when
+  // applying grouping logic.
+  const xAxisBucket = records.reduce(groupRecordsByXFields(xField), new Map());
 
-  const colorGen = [...COLORS];
-
-  const transformed = records.map((record) => {
-    const label = isDefault(groupField)
-      ? F_DEFAULT
-      : record.getCellValueAsString(groupField);
-    const xAxis = isDefault(xField)
-      ? F_DEFAULT
-      : record.getCellValueAsString(xField);
-
-    if (!groupBucket.has(label)) {
-      groupBucket.set(label, { backgroundColor: colorGen.shift() });
-    }
-
-    if (!xAxisBucket.has(xAxis)) {
-      xAxisBucket.set(xAxis, { index: xIndex, tally: 1 });
-      xIndex++;
-    } else {
-      let existing = xAxisBucket.get(xAxis);
-      xAxisBucket.set(xAxis, { ...existing, tally: existing.tally + 1 });
-    }
-
-    return { label, xAxis };
-  });
-
-  let datasets;
-
-  if (isDefault(groupField)) {
-    datasets = [
-      {
-        backgroundColor: colorGen.shift(),
-        data: [...xAxisBucket.values()].map((v) => v.tally),
-      },
-    ];
-  } else {
-    transformed.forEach(({ label, xAxis }) => {
-      const data = new Array(xAxisBucket.size).fill(0);
-      const xAxisIndex = xAxisBucket.get(xAxis).index;
-      let groupBucketEntry = groupBucket.get(label);
-
-      if (groupBucketEntry.label) {
-        groupBucketEntry.data[xAxisIndex] =
-          groupBucketEntry.data[xAxisIndex] + 1;
-        groupBucket.set(label, {
-          ...groupBucketEntry,
-          data: groupBucketEntry.data,
-        });
-      } else {
-        data[xAxisIndex] = 1;
-        groupBucket.set(label, {
-          ...groupBucketEntry,
-          label,
-          data,
-        });
-      }
-    });
-    datasets = [...groupBucket.values()];
-  }
+  // Return either a simple or stacked dataset
+  let datasets = isDefault(groupField)
+    ? simpleChartData(xAxisBucket)
+    : stackedChartData(xAxisBucket, records, xField, groupField);
 
   const data = {
+    // Labels map to the length and value of x-axis labels
     labels: [...xAxisBucket.keys()],
     datasets,
   };

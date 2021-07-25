@@ -1,3 +1,4 @@
+// Brand approved color constants.
 export default [
   "#2d7ff9",
   "#18bfff",

@@ -12,7 +12,8 @@ import {
 import GlobalConfigKeys from "../../config/settings";
 import { isDefault, F_DEFAULT } from "../../utils/isDefault";
 
-// The Controls box gives us our form handlers for manipulating global state.
+// The Controls box gives us our form handlers for
+// manipulating global state.
 // We can choose an xAxis value and a groupBy (optional) value.
 
 // [!] Note: if you don't need to control the shape of your select options,

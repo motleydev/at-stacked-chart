@@ -12,6 +12,8 @@ import BarChart from "./Chart/BarChart";
 import GlobalConfigKeys from "../config/settings";
 
 function SimpleChartApp() {
+  // A series of Airtable hooks that get the current
+  // base and active table.
   const base = useBase();
   const globalConfig = useGlobalConfig();
 
@@ -35,5 +37,5 @@ function SimpleChartApp() {
     </Box>
   );
 }
-
+// The render method for Airtable Blocks
 initializeBlock(() => <SimpleChartApp />);
