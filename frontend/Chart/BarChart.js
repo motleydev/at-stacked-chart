@@ -43,8 +43,10 @@ function BarChart({ table }) {
         },
       }}
     />
+  ) : table ? (
+    "Choose an X-Axis field"
   ) : (
-    "Choose a X-Axis field"
+    "Choose a Table"
   );
 }
 

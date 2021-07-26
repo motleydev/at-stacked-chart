@@ -5,15 +5,19 @@ import GlobalConfigKeys from "../../../config/settings";
 function useControlFields(table) {
   const globalConfig = useGlobalConfig();
 
-  const xFieldId = globalConfig.get(GlobalConfigKeys.X_FIELD_ID);
-  const xField =
-    xFieldId !== null ? table.getFieldByNameIfExists(xFieldId) : null;
+  if (table) {
+    const xFieldId = globalConfig.get(GlobalConfigKeys.X_FIELD_ID);
+    const xField =
+      xFieldId !== null ? table.getFieldByNameIfExists(xFieldId) : null;
 
-  const groupFieldId = globalConfig.get(GlobalConfigKeys.GROUP_FIELD_ID);
-  const groupField =
-    groupFieldId !== null ? table.getFieldByNameIfExists(groupFieldId) : null;
+    const groupFieldId = globalConfig.get(GlobalConfigKeys.GROUP_FIELD_ID);
+    const groupField =
+      groupFieldId !== null ? table.getFieldByNameIfExists(groupFieldId) : null;
 
-  return [xField, groupField];
+    return [xField, groupField];
+  } else {
+    return [];
+  }
 }
 
 export default useControlFields;

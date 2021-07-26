@@ -21,6 +21,7 @@ import { isDefault, F_DEFAULT } from "../../utils/isDefault";
 
 export default function Controls({ table }) {
   const globalConfig = useGlobalConfig();
+  const viewId = globalConfig.get(GlobalConfigKeys.VIEW_ID);
 
   // Fetching the synced values from our global state.
   const xAxisValue = globalConfig.get(GlobalConfigKeys.X_FIELD_ID);
@@ -29,10 +30,13 @@ export default function Controls({ table }) {
   // Creating our options for the xAxis and Group Select.
   // Our xAxis operation removes the primary field and formats the data.
   // Our groupBy operation removes the xAxis field from our options.
-  const xAxisFields = table.fields
-    .filter((f) => f.name !== table.primaryField.name)
-    .map(({ name }) => ({ value: name, label: name }));
-  const groupByFields = xAxisFields.filter((f) => f.value !== xAxisValue);
+  const xAxisFields =
+    table &&
+    table.fields
+      .filter((f) => f.name !== table.primaryField.name)
+      .map(({ name }) => ({ value: name, label: name }));
+  const groupByFields =
+    xAxisFields && xAxisFields.filter((f) => f.value !== xAxisValue);
 
   // Create a default value since Select doesn't support choosing null.
   const defaultSelect = { value: F_DEFAULT, label: "---" };
@@ -42,12 +46,12 @@ export default function Controls({ table }) {
   // the condition where an input is accidentally null which
   // creates the illusion of a broken form.
   React.useEffect(() => {
-    if (isDefault(xAxisValue))
+    if (isDefault(xAxisValue) || !viewId)
       globalConfig.setAsync(GlobalConfigKeys.X_FIELD_ID, F_DEFAULT);
     if (xAxisValue === groupByValue) {
       globalConfig.setAsync(GlobalConfigKeys.GROUP_FIELD_ID, F_DEFAULT);
     }
-  }, [xAxisValue, groupByValue]);
+  }, [viewId, xAxisValue, groupByValue]);
 
   return (
     <Box display="flex" padding={3} borderBottom="thick">
