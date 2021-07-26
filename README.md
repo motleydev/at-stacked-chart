@@ -38,18 +38,18 @@ _First, ensure you have the [Airtable CLI installed](https://www.npmjs.com/packa
    5	Alice		Dog
    ```
 
-2. **Get the code and install Dependencies**
+2. **Get the code and install Dependencies**  
    Clone this repository to a location on your computer.
    Install dependencies from the root of your application with either `npm install` or `yarn` if you prefer.
-3. **Get App ID and Block ID**
+3. **Get App ID and Block ID**  
    From your base, click "add new App", when provided the `init` script, copy the app id and block id.
-   **In the video below, this appears as the string value `appd9dkdYZyub62Hy/blkWKm2JYQM2l769Z`.**
-4. **Update Code reference**
+   _In the video below, this appears as the string value `appd9dkdYZyub62Hy/blkWKm2JYQM2l769Z`._
+4. **Update Code reference**  
    In your code editor, update the config in `.block/remote.json` with the appropriate values.
-5. **Run the block locally**
+5. **Run the block locally**  
    From the root of your new app, run `block run`. Note the provided server where your app is located. Typically `https://localhost:9000`.
    _Note, you may need to set a Chrome configuration to allow accessing https of unverified or expired urls - localhost in our case._
-6. **Provide running block endpoint to Airtable**
+6. **Provide running block endpoint to Airtable**  
    Return to the browser and provide the URL of the running block.
 
 View the following gif for a visual walk-through.
