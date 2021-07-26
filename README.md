@@ -2,25 +2,19 @@
 
 This example app shows how to intetgrate a charting library (Chart.Js) with Airtable blocks. The code shows:
 
-- How to use the Chart.js external library.
+- How to use the [Chart.js external library](https://www.chartjs.org/).
+- How to store app-related data using [`globalConfig`](https://www.airtable.com/developers/apps/api/models/GlobalConfig) and [`Synced` UI components](https://www.airtable.com/developers/apps/api/UI/components/SelectSynced).
+- How to use [Standard UI components](https://www.airtable.com/developers/apps/api/UI/components/Select) for custom behavior.
+- How to implement custom hook wrappers around logically grouped Airtable features.
 
-- How to store app-related data using `globalConfig` and `Synced` UI components.
-
-- How to use Standard UI components for custom behavior.
-
-- How to implement custom hook wrappers around specific Airtable features.
-
-The application lets a user view a simple bar chart or a stacked chart based on a grouping select input.
+The application lets a user view a simple bar chart or a stacked chart based on a "grouping" select input.
 
 ## Code organization
 
 The application relevant code lives in two directories:
 
-`/config`  
-All globally defined store keys and constants.
-
-`/frontend`  
-The React code that runs our application interface.
+`/config`: All globally defined store keys and constants.
+`/frontend`: The React code that runs our application interface.
 
 ## See the app running
 
@@ -30,7 +24,8 @@ The React code that runs our application interface.
 
 _First, ensure you have the [Airtable CLI installed](https://www.npmjs.com/package/@airtable/blocks-cli)._
 
-1. Create a new base with at least two columns of data with a many-to-one cardinality. ie. One Pet Owner has many Pets.
+1. _Setup_
+   Create a new base with at least two columns of data with a many-to-one cardinality, i.e. one `Pet Owner` has many `Pets`.
 
    The data in this screenshot is as follows:
 
@@ -39,21 +34,23 @@ _First, ensure you have the [Airtable CLI installed](https://www.npmjs.com/packa
    1	Alice		Cat
    2	Bob 		Dog
    3	Alice		Hamster
-   4	Bob			Hamster
+   4	Bob		Hamster
    5	Alice		Dog
    ```
 
-2. Clone this repository to a location on your computer. Install dependencies from the root of your application with either `npm install` or `yarn` if you prefer.
-
-3. From your base, click "add new App", when provided the `init` script, copy the app id and block id.
-
-4. In your code editor, update the config in `.block/remote.json` with the appropriate values.
-
-5. From the root of your new app, run `block run`. Note the provided server where your app is located. Typically `https://localhost:9000`.
-
-_Note, you may need to set a Chrome configuration to allow accessing https of unverified or expired urls - localhost in our case._
-
-6. Return to the browser and provide the URL of the running block.
+2. _Get the code and install Dependencies_
+   Clone this repository to a location on your computer.
+   Install dependencies from the root of your application with either `npm install` or `yarn` if you prefer.
+3. _Get App ID and Block ID_
+   From your base, click "add new App", when provided the `init` script, copy the app id and block id.
+   _In the video below, this appears as the string value `appd9dkdYZyub62Hy/blkWKm2JYQM2l769Z`._
+4. _Update Code reference_
+   In your code editor, update the config in `.block/remote.json` with the appropriate values.
+5. _Run the block locally_
+   From the root of your new app, run `block run`. Note the provided server where your app is located. Typically `https://localhost:9000`.
+   _Note, you may need to set a Chrome configuration to allow accessing https of unverified or expired urls - localhost in our case._
+6. _Provide running block endpoint to Airtable_
+   Return to the browser and provide the URL of the running block.
 
 View the following gif for a visual walk-through.
 
