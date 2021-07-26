@@ -28,15 +28,13 @@ _First, ensure you have the [Airtable CLI installed](https://www.npmjs.com/packa
    Create a new base with at least two columns of data with a many-to-one cardinality, i.e. one `Pet Owner` has many `Pets`.
 
    The data in this screenshot is as follows:
-
-   ```tsv
-   N	Person		Pet type
-   1	Alice		Cat
-   2	Bob 		Dog
-   3	Alice		Hamster
-   4	Bob		Hamster
-   5	Alice		Dog
-   ```
+   | N | Person |Pet type |
+   | --- | --- | --- |
+   | 1 | Alice | Cat |
+   | 2 | Bob | Dog |
+   | 3 | Alice | Hamster |
+   | 4 | Bob | Hamster |
+   | 5 | Alice | Dog |
 
 2. **Get the code and install Dependencies**  
    Clone this repository to a location on your computer.
